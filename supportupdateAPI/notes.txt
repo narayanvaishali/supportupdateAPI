@@ -1,0 +1,2 @@
+﻿//https://www.c-sharpcorner.com/article/enabling-cors-in-asp-net-core-api-application/
+
