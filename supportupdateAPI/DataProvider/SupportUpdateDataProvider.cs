@@ -44,6 +44,7 @@ namespace supportupdateAPI.DataProvider
                 oResult.supportupdate = data.Read<dynamic>().ToArray();
                 oResult.supportstatus = data.Read<dynamic>().ToArray();
                 oResult.supportpriority = data.Read<dynamic>().ToArray();
+                oResult.supportstaff = data.Read<dynamic>().ToArray();
             }
             return oResult;
         }
@@ -66,7 +67,7 @@ namespace supportupdateAPI.DataProvider
                         CurrentStatusID = (int)supportDetails.CurrentStatusID,
                         TimeSpent = (int)supportDetails.TimeSpent,
                         DateWorked = (DateTime?)supportDetails.DateWorked, /*.ToString("yyyy-MM-dd"),*/
-                        Staff_Name = (string)supportDetails.Staff_Name
+                        StaffID = (int)supportDetails.StaffID
                     }, commandType: CommandType.StoredProcedure); 
                 }
 

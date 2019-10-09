@@ -26,7 +26,7 @@ namespace supportupdateAPI.Models
         public DateTime? DateWorked { get; set; }
 
 
-        public string Staff_Name { get; set; }
+        public int StaffID { get; set; }
         public string Staff_Email { get; set; }
     }
 
