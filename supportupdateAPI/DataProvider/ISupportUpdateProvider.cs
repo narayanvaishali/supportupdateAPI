@@ -14,5 +14,9 @@ namespace supportupdateAPI.DataProvider
         dynamic AddEditSupportUpdate(SupportUpdateType support);
 
         dynamic DeleteSupportUpdate(int SupportUpdateID);
+
+        dynamic GetSupportUpdateSummary(int staffid, string dateworked);
+
+        dynamic SendSummaryEmail(SupportSummaryType summary);
     }
 }

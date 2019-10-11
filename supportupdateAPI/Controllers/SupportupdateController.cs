@@ -44,6 +44,20 @@ namespace supportupdateAPI.Controllers
             await this._supportProvider.DeleteSupportUpdate(supportupdateid);
 
         }
+
+        [Route("supportupdatesummary")]
+        [HttpGet]
+        public IActionResult GetSupportUpdateSummary(int staffid, string dateworked)
+        {
+            return Ok(_supportProvider.GetSupportUpdateSummary(staffid, dateworked));
+        }
+
+        [Route("sendsummaryemail")]
+        [HttpPost]
+        public IActionResult SendSummaryEmail([FromBody] SupportSummaryType summary)
+        {
+            return Ok(_supportProvider.SendSummaryEmail(summary));
+        }
     }
    
 }

@@ -17,11 +17,26 @@ namespace supportupdateAPI.DataProvider
         Config config = new Config();
         //string connStr = Config.ConnectionString;
 
-         private readonly string connectionString;
+        private readonly string connectionString;
 
         public SupportUpdateDataProvider()
         {
             this.connectionString = Config.ConnectionString;
+        }
+
+        public dynamic GetSupportUpdateSummary(int staffid, string dateworked)
+        {
+            dynamic oResult = new ExpandoObject();
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@StaffID", staffid);
+                parameters.Add("@DateWorked", dateworked == "null" ? null :  dateworked);
+                var data = connection.QueryMultiple(@"GetSupportUpdateSummary", parameters, commandType: CommandType.StoredProcedure);
+
+                oResult.supportupdatesummary = data.Read<dynamic>().ToArray();
+            }
+            return oResult;
         }
 
         //  public IEnumerable<SupportUpdateType> GetSupportUpdateDetails(int supportupdateid)
@@ -31,20 +46,15 @@ namespace supportupdateAPI.DataProvider
             dynamic oResult = new ExpandoObject();
             using (var connection = new SqlConnection(connectionString))
             {
-                /*  support = connection.Query<SupportUpdateType>(@"GetSupportUpdateDetails", new
-                  {
-                      SupportUpdateID = supportupdateid
-                  }, commandType: CommandType.StoredProcedure);*/
-
                 var parameters = new DynamicParameters();
                 parameters.Add("@SupportUpdateID", supportupdateid);
                 var data = connection.QueryMultiple(@"GetSupportUpdateDetails", parameters, commandType: CommandType.StoredProcedure);
-               
 
                 oResult.supportupdate = data.Read<dynamic>().ToArray();
                 oResult.supportstatus = data.Read<dynamic>().ToArray();
                 oResult.supportpriority = data.Read<dynamic>().ToArray();
                 oResult.supportstaff = data.Read<dynamic>().ToArray();
+                oResult.supportclients = data.Read<dynamic>().ToArray();
             }
             return oResult;
         }
@@ -67,8 +77,9 @@ namespace supportupdateAPI.DataProvider
                         CurrentStatusID = (int)supportDetails.CurrentStatusID,
                         TimeSpent = (int)supportDetails.TimeSpent,
                         DateWorked = (DateTime?)supportDetails.DateWorked, /*.ToString("yyyy-MM-dd"),*/
+                        ClientID = (int)supportDetails.ClientID,
                         StaffID = (int)supportDetails.StaffID
-                    }, commandType: CommandType.StoredProcedure); 
+                    }, commandType: CommandType.StoredProcedure);
                 }
 
                 Status = "Success";
@@ -77,9 +88,9 @@ namespace supportupdateAPI.DataProvider
 
             catch (Exception ex)
             {
-                 Status = "Internal server error";
+                Status = "Internal server error";
                 return Status;
-            }         
+            }
         }
 
         public dynamic DeleteSupportUpdate(int supportupdateID)
@@ -106,63 +117,29 @@ namespace supportupdateAPI.DataProvider
         }
 
 
-        /* public dynamic GetSupportUpdateDetails()
-         {
-
-             using (var _conn = new SqlConnection(connStr))
-             {
-                 return _conn.Query(@"GetSupportUpdateDetails", new
-                 {
-                     SupportUpdateID = (int?)null
-                   }, commandType: CommandType.StoredProcedure);
-             }
-         }
-
-         public dynamic GetSupportUpdate(int ZD_ID)
-         {
-
-             using (var _conn = new SqlConnection(connStr))
-             {
-                 return _conn.Query(@"GetSupportUpdateDetails", new
-                 {
-                     SupportUpdateID = (int?)null
-                 }, commandType: CommandType.StoredProcedure);
-             }
-         }
-
-         public dynamic AddSupportUpdate (SupportUpdateType support)
-         {
-              using (var _conn = new SqlConnection(connStr))
-             {
-                 return _conn.Query(@"GetSupportUpdateDetails", new
-                 {
-                     SupportUpdateID = (int?)null
+        public dynamic SendSummaryEmail(SupportSummaryType summary)
+        {
+            string Status = "";
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Execute(@"SendSummaryEmail", new
+                    {
+                        DateWorked = summary.DateWorked == ""? null : (string)summary.DateWorked, /*.ToString("yyyy-MM-dd"),*/
+                        StaffID = (int)summary.StaffID
                     }, commandType: CommandType.StoredProcedure);
-             }
-         }
+                }
 
-         public dynamic UpdateSupportUpdate(SupportUpdateType support)
-         {
-             using (var _conn = new SqlConnection(connStr))
-             {
-                 return _conn.Query(@"GetSupportUpdateDetails", new
-                 {
-                     SupportUpdateID = (int?)null
-                 }, commandType: CommandType.StoredProcedure);
-             }
-         }
-
-         public dynamic DeleteSupportUpdate(int ZD_ID)
-         {
-             using (var _conn = new SqlConnection(connStr))
-             {
-                 return _conn.Query(@"GetSupportUpdateDetails", new
-                 {
-                     SupportUpdateID = (int?)null
-                 }, commandType: CommandType.StoredProcedure);
-             }
-         }
-         */
+                Status = "Success";
+                return Status;
+            }
+            catch (Exception ex)
+            {
+                Status = "Internal server error";
+                return Status;
+            }
+        }
     }
 
 }

@@ -25,6 +25,7 @@ namespace supportupdateAPI.Models
         [JsonConverter(typeof(JsonDateConverter))]
         public DateTime? DateWorked { get; set; }
 
+        public int ClientID { get; set; }
 
         public int StaffID { get; set; }
         public string Staff_Email { get; set; }
