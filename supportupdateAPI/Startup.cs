@@ -49,6 +49,7 @@ namespace supportupdateAPI
             services.AddTransient<ISupportStatusProvider, StatusDataProvider>();
             services.AddTransient<ISupportPriorityProvider, PriorityDataProvider>();
             services.AddTransient<ISupportStaffProvider, SupportStaffDataProvider>();
+            services.AddTransient<IEmployeeLoginProvider, EmployeeLoginDataProvider>();
 
             var mvcCoreBuilder = services.AddMvcCore();
 
