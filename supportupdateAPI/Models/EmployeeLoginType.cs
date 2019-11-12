@@ -19,6 +19,8 @@ namespace supportupdateAPI.Models
         public string Password { get; set; }
         public string EmployeeName { get; set; }
 
+        public int StaffID { get; set; }
+
     }
 
 }
